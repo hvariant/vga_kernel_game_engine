@@ -99,16 +99,28 @@ disp_color_str:
 	ret
 
 ; ========================================================================
-;                  void put_pixel(int color)
+;                  void put_pixel(int p,int len,int color)
 ; ========================================================================
 
 put_pixel:
   push ebp
   mov ebp,esp
 
-	mov	eax, [ebp + 8]	;color
-	mov	edi, [disp_pos]
-  mov [gs:edi], al
+  mov ecx, [ebp + 12] ;len
+  mov eax, [ebp + 16]
+
+  mov di,ax ; ax in di
+  mov ax,es
+  mov dx,ax ; es in dx
+  mov ax,gs
+  mov es,ax
+
+  mov ax,di
+	mov	edi, [ebp + 8]
+  rep stosb
+
+  mov ax,dx
+  mov es,ax
 
   pop ebp
   ret
