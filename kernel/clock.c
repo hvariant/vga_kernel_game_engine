@@ -19,7 +19,7 @@
  *======================================================================*/
 PUBLIC void clock_handler(int irq)
 {
-	disp_str("#");
+	//disp_str("#");
 
 	if (k_reenter != 0) { /* ÷–∂œ÷ÿ»Î */
 		disp_str("!");

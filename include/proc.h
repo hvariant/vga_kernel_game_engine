@@ -45,7 +45,7 @@ typedef struct s_task {
 
 
 /* Number of tasks */
-#define NR_TASKS	3
+#define NR_TASKS	1
 
 /* stacks of tasks */
 #define STACK_SIZE_TESTA	0x800

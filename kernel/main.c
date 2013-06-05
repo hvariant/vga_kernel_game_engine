@@ -65,8 +65,10 @@ PUBLIC int kernel_main()
 
 	p_proc_ready	= proc_table;
 
-    put_irq_handler(CLOCK_IRQ, clock_handler); /* 设定时钟中断处理程序 */
-    enable_irq(CLOCK_IRQ);                     /* 让8259A可以接收时钟中断 */
+  put_irq_handler(CLOCK_IRQ, clock_handler); /* 设定时钟中断处理程序 */
+  put_irq_handler(KEYBOARD_IRQ,keyboard_irq);
+  enable_irq(CLOCK_IRQ);                     /* 让8259A可以接收时钟中断 */
+  enable_irq(KEYBOARD_IRQ);
 
 	restart();
 
@@ -76,41 +78,10 @@ PUBLIC int kernel_main()
 /*======================================================================*
                                TestA
  *======================================================================*/
-void TestA()
+void Engine()
 {
 	int i = 0;
 	while(1){
-		disp_str("A");
-		disp_int(i++);
-		disp_str(".");
-		delay(1);
-	}
-}
 
-/*======================================================================*
-                               TestB
- *======================================================================*/
-void TestB()
-{
-	int i = 0x1000;
-	while(1){
-		disp_str("B");
-		disp_int(i++);
-		disp_str(".");
-		delay(1);
-	}
-}
-
-/*======================================================================*
-                               TestC
- *======================================================================*/
-void TestC()
-{
-	int i = 0x2000;
-	while(1){
-		disp_str("C");
-		disp_int(i++);
-		disp_str(".");
-		delay(1);
 	}
 }
