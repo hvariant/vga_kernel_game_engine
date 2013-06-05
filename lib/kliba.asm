@@ -20,7 +20,7 @@ global	out_byte
 global	in_byte
 global  enable_irq
 global  disable_irq
-
+global  put_pixel
 
 ; ========================================================================
 ;                  void disp_str(char * info);
@@ -97,6 +97,21 @@ disp_color_str:
 
 	pop	ebp
 	ret
+
+; ========================================================================
+;                  void put_pixel(int color)
+; ========================================================================
+
+put_pixel:
+  push ebp
+  mov ebp,esp
+
+	mov	eax, [ebp + 8]	;color
+	mov	edi, [disp_pos]
+  mov [gs:edi], al
+
+  pop ebp
+  ret
 
 ; ========================================================================
 ;                  void out_byte(u16 port, u8 value);

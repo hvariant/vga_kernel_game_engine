@@ -19,7 +19,9 @@
  *======================================================================*/
 PUBLIC int kernel_main()
 {
-	disp_str("-----\"kernel_main\" begins-----\n");
+	//disp_str("-----\"kernel_main\" begins-----\n");
+  for(disp_pos = 0;disp_pos < 320*200;disp_pos++)
+    put_pixel(0x40);
 
 	TASK*		p_task		= task_table;
 	PROCESS*	p_proc		= proc_table;
@@ -78,10 +80,21 @@ PUBLIC int kernel_main()
 /*======================================================================*
                                TestA
  *======================================================================*/
+
 void Engine()
 {
 	int i = 0;
+  static int color = 0;
 	while(1){
+    if(i == 1000){
+      for(disp_pos = 0;disp_pos < 320*200;disp_pos++)
+        put_pixel(color);
 
+      i = 0;
+      color = (color + 1) % 256;
+    }
+
+
+    i++;
 	}
 }

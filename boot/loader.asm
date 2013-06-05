@@ -21,7 +21,8 @@ org  0100h
 LABEL_GDT:			Descriptor             0,                    0, 0						; 空描述符
 LABEL_DESC_FLAT_C:		Descriptor             0,              0fffffh, DA_CR  | DA_32 | DA_LIMIT_4K			; 0 ~ 4G
 LABEL_DESC_FLAT_RW:		Descriptor             0,              0fffffh, DA_DRW | DA_32 | DA_LIMIT_4K			; 0 ~ 4G
-LABEL_DESC_VIDEO:		Descriptor	 0B8000h,               0ffffh, DA_DRW                         | DA_DPL3	; 显存首地址
+;LABEL_DESC_VIDEO:		Descriptor	   0B8000h,               0ffffh, DA_DRW                         | DA_DPL3	; 显存首地址
+LABEL_DESC_VIDEO:		Descriptor	 0A0000h,               0ffffh, DA_DRW                         | DA_DPL3	; 显存首地址
 ; GDT ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 GdtLen		equ	$ - LABEL_GDT
@@ -165,6 +166,10 @@ LABEL_FILE_LOADED:
 
 	mov	dh, 1			; "Ready."
 	call	DispStrRealMode		; 显示字符串
+
+  mov al,13h
+  mov ah,0
+  int 10h
 	
 ; 下面准备跳入保护模式 -------------------------------------------
 
@@ -356,6 +361,10 @@ LABEL_PM_START:
 	push	szMemChkTitle
 	call	DispStr
 	add	esp, 4
+
+  push  SelectorVideo
+  call  DispInt
+  call  DispReturn
 
 	call	DispMemInfo
 	call	SetupPaging
