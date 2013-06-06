@@ -22,6 +22,8 @@ EXTERN	u32		k_reenter;
 EXTERN	TSS		tss;
 EXTERN	PROCESS*	p_proc_ready;
 
+EXTERN  char      double_buf[320*200+10];
+
 EXTERN  volatile int     tick;
 
 EXTERN  volatile int     keys_len;

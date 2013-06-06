@@ -61,4 +61,6 @@
 #define VKEY_LEFT 0x23
 #define VKEY_RIGHT 0x26
 
+#define REFRESH_TICKS 80
+
 #endif /* _ORANGES_CONST_H_ */

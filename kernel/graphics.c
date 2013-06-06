@@ -9,7 +9,7 @@ extern volatile int keys_len;
 extern volatile int keys[KEY_BUFFER_SIZE];
 
 void draw_rect(int x,int y,int w,int h,int c){
-  int i;
+  int i,j;
 
   if(x < 0) x = 0;
   if(x >= 320) x = 319;
@@ -22,6 +22,7 @@ void draw_rect(int x,int y,int w,int h,int c){
   for(i=y;i<y+h;i++){
     int s = x + i*320;
     put_pixel(s,w,c);
+    //for(j=s;j<s+w;j++) double_buf[j] = c;
   }
 }
 
@@ -98,7 +99,7 @@ void engine()
   init_p();
   i = 0;
   while(1){
-    while(tick - lasttick < 50);
+    while(tick - lasttick < REFRESH_TICKS);
     lasttick = tick;
 
     disable_irq(CLOCK_IRQ);
@@ -112,7 +113,6 @@ void engine()
     bg++;
 
     draw_rect(0,0,320,200,0);
-
     for(i=0;i<4;i++)
       for(j=0;j<MAX_SPRITE_Z;j++){
         if(sp_list[i][j].used == 1){
