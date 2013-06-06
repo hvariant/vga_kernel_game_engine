@@ -54,4 +54,11 @@
 
 #define NULL ((void*)0)
 
+#define KEY_BUFFER_SIZE 10
+
+#define VKEY_UP 0x25
+#define VKEY_DOWN 0x24
+#define VKEY_LEFT 0x23
+#define VKEY_RIGHT 0x26
+
 #endif /* _ORANGES_CONST_H_ */

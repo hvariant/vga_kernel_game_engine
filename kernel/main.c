@@ -21,6 +21,8 @@ PUBLIC int kernel_main()
 {
   int i;
 	//disp_str("-----\"kernel_main\" begins-----\n");
+  draw_rect(0,0,320,200,0);
+  keys_len = 0;
 
 	TASK*		p_task		= task_table;
 	PROCESS*	p_proc		= proc_table;

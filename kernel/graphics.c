@@ -5,10 +5,12 @@
 #include "graphics.h"
 
 extern volatile int tick;
+extern volatile int keys_len;
+extern volatile int keys[KEY_BUFFER_SIZE];
 
 void draw_rect(int x,int y,int w,int h,int c){
   int i;
- 
+
   for(i=y;i<y+h;i++){
     int s = x + i*320;
     put_pixel(s,w,c);
@@ -24,18 +26,17 @@ void init_mem(){
   head = (mem_t*)mem;
   head->prev = head->next = head;
   head->size = 0;
-  head->ptr = head+sizeof(mem_t);
+  head->ptr = (char*)head+sizeof(mem_t);
 }
 
 void* alloc_mem(int size){
   mem_t* m = head;
   int freesize;
 
-  while(m->next != head && freesize < size){
-    m = m->next;
-    freesize = (((char*)m->next) - ((char*)m->ptr)) - sizeof(mem_t);
+  while(m->next != head){
+    freesize = (((char*)m->next) - ((char*)m->ptr)) - m->size;
 
-    if(freesize - sizeof(mem_t) >= size){
+    if(freesize - (int)sizeof(mem_t) >= size){
       mem_t* ret = m->ptr + m->size;
       ret->prev = m;
       ret->next = m->next;
@@ -47,10 +48,12 @@ void* alloc_mem(int size){
 
       return ret->ptr;
     }
+
+    m = m->next;
   }
 
-  freesize = MEM_SIZE + mem - ((char*)m->ptr + sizeof(mem_t));
-  if(freesize >= size){
+  freesize = MEM_SIZE + mem - ((char*)m->ptr + m->size);
+  if(freesize - (int)sizeof(mem_t) >= size){
     mem_t* ret = m->ptr + m->size;
     ret->prev = m;
     ret->next = m->next;
@@ -62,7 +65,7 @@ void* alloc_mem(int size){
 
     return ret->ptr;
   }
-  
+
   return NULL;
 }
 
@@ -72,12 +75,11 @@ void free_mem(void* v){
   m->next->prev = m->prev;
 }
 
-void Engine()
+void engine()
 {
   int i,j;
-  static int bg = 0;
+  int bg = 0;
   static int lasttick = 0;
-
 
   for(i=0;i<4;i++)
     for(j=0;j<MAX_SPRITE_Z;j++){
@@ -91,13 +93,24 @@ void Engine()
     while(tick - lasttick < 100);
     lasttick = tick;
 
-    if(bg % 2 == 0){
-      draw_rect(0,0,320,200,0x80);
-    } else {
-      draw_rect(0,0,320,200,0x81);
+    disable_irq(CLOCK_IRQ);
+    disable_irq(KEYBOARD_IRQ);
+
+    bg = 0;
+    for(i=0;i<keys_len;i++){
+      if(keys[i] == VKEY_UP){
+        bg = 0x20;
+      } else if(keys[i] == VKEY_DOWN){
+        bg = 0x30;
+      } else if(keys[i] == VKEY_LEFT){
+        bg = 0x40;
+      } else {
+        bg = 0x50;
+      }
     }
-    bg++;
-    
+    draw_rect(0,0,320,200,bg);
+    keys_len = 0;
+    enable_irq(KEYBOARD_IRQ);
 
     for(i=0;i<4;i++)
       for(j=0;j<MAX_SPRITE_Z;j++){
@@ -106,13 +119,14 @@ void Engine()
           sp_list[i][j].sp->t(sp_list[i][j].sp);
         }
       }
+
+    enable_irq(CLOCK_IRQ);
   }
 }
 
 void add_sprite(sprite_t* s,int z){
   int j;
 
-  s->reserved = NULL;
   for(j=0;j<MAX_SPRITE_Z;j++){
     if(sp_list[z][j].used == 0){
       sp_list[z][j].used = 1;

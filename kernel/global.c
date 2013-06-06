@@ -19,6 +19,6 @@ PUBLIC	PROCESS			proc_table[NR_TASKS];
 
 PUBLIC	char			task_stack[STACK_SIZE_TOTAL];
 
-PUBLIC	TASK	task_table[NR_TASKS] = {{Engine, STACK_SIZE_TESTA, "Engine"}};
+PUBLIC	TASK	task_table[NR_TASKS] = {{engine, STACK_SIZE_TESTA, "Engine"}};
 
 PUBLIC	irq_handler		irq_table[NR_IRQ];

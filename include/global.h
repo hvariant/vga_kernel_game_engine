@@ -24,8 +24,12 @@ EXTERN	PROCESS*	p_proc_ready;
 
 EXTERN  volatile int     tick;
 
+EXTERN  volatile int     keys_len;
+EXTERN  volatile int     keys[KEY_BUFFER_SIZE];
+
 extern	PROCESS		proc_table[];
 extern	char		task_stack[];
 extern  TASK        task_table[];
 extern	irq_handler	irq_table[];
+
 

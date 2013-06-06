@@ -358,13 +358,13 @@ LABEL_PM_START:
 	mov	ss, ax
 	mov	esp, TopOfStack
 
-	push	szMemChkTitle
-	call	DispStr
-	add	esp, 4
+	;push	szMemChkTitle
+	;call	DispStr
+	;add	esp, 4
 
-  push  SelectorVideo
-  call  DispInt
-  call  DispReturn
+  ;push  SelectorVideo
+  ;call  DispInt
+  ;call  DispReturn
 
 	call	DispMemInfo
 	call	SetupPaging
