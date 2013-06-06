@@ -103,11 +103,8 @@ disp_color_str:
 ; ========================================================================
 
 put_pixel:
-  push ebp
-  mov ebp,esp
-
-  mov ecx, [ebp + 12] ;len
-  mov eax, [ebp + 16]
+  mov ecx, [esp + 8] ;len
+  mov eax, [esp + 12]
 
   mov di,ax ; ax in di
   mov ax,es
@@ -116,13 +113,12 @@ put_pixel:
   mov es,ax
 
   mov ax,di
-	mov	edi, [ebp + 8]
+	mov	edi, [esp + 4]
   rep stosb
 
   mov ax,dx
   mov es,ax
 
-  pop ebp
   ret
 
 ; ========================================================================

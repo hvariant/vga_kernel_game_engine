@@ -26,7 +26,7 @@ ORANGESBOOT	= boot/boot.bin boot/loader.bin
 ORANGESKERNEL	= kernel.bin
 OBJS		= kernel/kernel.o kernel/start.o kernel/main.o kernel/clock.o kernel/keyboard.o\
 			kernel/i8259.o kernel/global.o kernel/protect.o\
-			lib/kliba.o lib/klib.o lib/string.o
+			lib/kliba.o lib/klib.o lib/string.o kernel/graphics.o tetris/demo.o
 DASMOUTPUT	= kernel.bin.asm
 
 # All Phony Targets
@@ -82,6 +82,9 @@ kernel/clock.o: kernel/clock.c
 kernel/keyboard.o: kernel/keyboard.c
 	$(CC) $(CFLAGS) -o $@ $<
 
+kernel/graphics.o: kernel/graphics.c include/graphics.h
+	$(CC) $(CFLAGS) -o $@ $<
+
 kernel/i8259.o: kernel/i8259.c include/type.h include/const.h include/protect.h include/proto.h
 	$(CC) $(CFLAGS) -o $@ $<
 
@@ -102,3 +105,6 @@ lib/kliba.o : lib/kliba.asm
 
 lib/string.o : lib/string.asm
 	$(ASM) $(ASMKFLAGS) -o $@ $<
+
+tetris/demo.o: tetris/demo.c include/graphics.h
+	$(CC) $(CFLAGS) -o $@ $<

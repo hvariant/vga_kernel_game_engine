@@ -22,6 +22,8 @@ EXTERN	u32		k_reenter;
 EXTERN	TSS		tss;
 EXTERN	PROCESS*	p_proc_ready;
 
+EXTERN  volatile int     tick;
+
 extern	PROCESS		proc_table[];
 extern	char		task_stack[];
 extern  TASK        task_table[];

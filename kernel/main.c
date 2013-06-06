@@ -19,13 +19,13 @@
  *======================================================================*/
 PUBLIC int kernel_main()
 {
+  int i;
 	//disp_str("-----\"kernel_main\" begins-----\n");
 
 	TASK*		p_task		= task_table;
 	PROCESS*	p_proc		= proc_table;
 	char*		p_task_stack	= task_stack + STACK_SIZE_TOTAL;
 	u16		selector_ldt	= SELECTOR_LDT_FIRST;
-	int i;
 	for (i = 0; i < NR_TASKS; i++) {
 		strcpy(p_proc->p_name, p_task->name);	// name of the process
 		p_proc->pid = i;			// pid
@@ -73,25 +73,4 @@ PUBLIC int kernel_main()
 	restart();
 
 	while(1){}
-}
-
-/*======================================================================*
-                               TestA
- *======================================================================*/
-
-void Engine()
-{
-	int i = 0;
-  static int color = 0;
-	while(1){
-    if(i == 1){
-      put_pixel(0,320*200,color);
-
-      i = 0;
-      color = (color + 1) % 256;
-    }
-
-
-    i++;
-	}
 }

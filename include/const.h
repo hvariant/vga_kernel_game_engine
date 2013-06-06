@@ -52,5 +52,6 @@
 #define	PRINTER_IRQ	7
 #define	AT_WINI_IRQ	14	/* at winchester */
 
+#define NULL ((void*)0)
 
 #endif /* _ORANGES_CONST_H_ */
