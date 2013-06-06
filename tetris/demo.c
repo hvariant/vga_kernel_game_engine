@@ -45,6 +45,32 @@ void noop_tick(sprite_t* s){
   //noop
 }
 
+extern int keys_len;
+extern int keys[KEY_BUFFER_SIZE];
+
+void hjkl_tick(sprite_t* s){
+  int key = 0;
+
+  if(keys_len > 0)
+    key = keys[keys_len-1];
+
+  int w = ((int*)s->data)[2];
+  switch(key){
+    case VKEY_DOWN:
+      ((int*)s->data)[1] += w;
+      break;
+    case VKEY_UP:
+      ((int*)s->data)[1] -= w;
+      break;
+    case VKEY_LEFT:
+      ((int*)s->data)[0] -= w;
+      break;
+    case VKEY_RIGHT:
+      ((int*)s->data)[0] += w;
+      break;
+  }
+}
+
 void init_p(){
   sprite_t *z1,*z2;
   sprite_t *s1,*s2;
@@ -55,7 +81,8 @@ void init_p(){
   s2 = mk_sprite(250,130,5,0x50);
   z1->d = z2->d = zig_draw;
   s1->d = s2->d = sq_draw;
-  z1->t = z2->t = s1->t = s2->t = noop_tick;
+  z2->t = s1->t = s2->t = noop_tick;
+  z1->t = hjkl_tick;
 
   add_sprite(z1,0);
   add_sprite(z2,1);

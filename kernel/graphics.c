@@ -11,6 +11,14 @@ extern volatile int keys[KEY_BUFFER_SIZE];
 void draw_rect(int x,int y,int w,int h,int c){
   int i;
 
+  if(x < 0) x = 0;
+  if(x >= 320) x = 319;
+  if(y < 0) y = 0;
+  if(y >= 200) y = 199;
+
+  if(x + w > 320) w = 320 - x;
+  if(y + h > 200) h = 200 - y;
+
   for(i=y;i<y+h;i++){
     int s = x + i*320;
     put_pixel(s,w,c);
@@ -90,36 +98,31 @@ void engine()
   init_p();
   i = 0;
   while(1){
-    while(tick - lasttick < 100);
+    while(tick - lasttick < 50);
     lasttick = tick;
 
     disable_irq(CLOCK_IRQ);
     disable_irq(KEYBOARD_IRQ);
 
-    bg = 0;
-    for(i=0;i<keys_len;i++){
-      if(keys[i] == VKEY_UP){
-        bg = 0x20;
-      } else if(keys[i] == VKEY_DOWN){
-        bg = 0x30;
-      } else if(keys[i] == VKEY_LEFT){
-        bg = 0x40;
-      } else {
-        bg = 0x50;
-      }
+    if(bg % 2 == 0){
+      //draw_rect(0,0,320,200,0x80);
+    } else {
+      //draw_rect(0,0,320,200,0x81);
     }
-    draw_rect(0,0,320,200,bg);
-    keys_len = 0;
-    enable_irq(KEYBOARD_IRQ);
+    bg++;
+
+    draw_rect(0,0,320,200,0);
 
     for(i=0;i<4;i++)
       for(j=0;j<MAX_SPRITE_Z;j++){
         if(sp_list[i][j].used == 1){
-          sp_list[i][j].sp->d(sp_list[i][j].sp);
           sp_list[i][j].sp->t(sp_list[i][j].sp);
+          sp_list[i][j].sp->d(sp_list[i][j].sp);
         }
       }
-
+    
+    keys_len = 0;
+    enable_irq(KEYBOARD_IRQ);
     enable_irq(CLOCK_IRQ);
   }
 }
