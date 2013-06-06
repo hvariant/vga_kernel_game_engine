@@ -49,10 +49,7 @@ extern int keys_len;
 extern int keys[KEY_BUFFER_SIZE];
 
 void hjkl_tick(sprite_t* s){
-  int key = 0;
-
-  if(keys_len > 0)
-    key = keys[keys_len-1];
+  int key = get_lastkey();
 
   int w = ((int*)s->data)[2];
   switch(key){
