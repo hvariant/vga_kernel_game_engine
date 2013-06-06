@@ -146,3 +146,8 @@ void remove_sprite(sprite_t* s){
   if(e != NULL)
     e->used = 0;
 }
+
+int get_lastkey(){
+  if(keys_len == 0) return 0;
+  return keys[keys_len-1];
+}
