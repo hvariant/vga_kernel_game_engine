@@ -83,3 +83,8 @@ void init_p(){
   add_sprite(s1,2);
   add_sprite(s2,3);
 }
+
+void main_p(){//main game logic, handle drop, collision, sprite generation
+              // and other stuff
+  
+}

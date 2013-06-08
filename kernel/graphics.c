@@ -120,6 +120,8 @@ void engine()
           sp_list[i][j].sp->d(sp_list[i][j].sp);
         }
       }
+
+    main_p();
     
     keys_len = 0;
     enable_irq(KEYBOARD_IRQ);
