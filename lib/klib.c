@@ -73,3 +73,15 @@ PUBLIC void delay(int times)
 		}
 	}
 }
+
+int rand_seed;
+int X;
+
+void srand(int seed){
+  rand_seed = seed;
+  X = seed;
+}
+
+int rand(){
+  return X = (69069 * X + 1);
+}

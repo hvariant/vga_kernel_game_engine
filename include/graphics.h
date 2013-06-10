@@ -45,4 +45,6 @@ void main_p(void);
 
 int get_lastkey();
 
+extern volatile int tick;
+
 #endif

@@ -1,9 +1,35 @@
 #include "graphics.h"
 #include "const.h"
+#include "stdio.h"
+
+
+#define MAX_WIDTH 100
+#define MAX_HEIGHT 200
+#define MIN_WIDTH 0
+#define MIN_HEIGHT 0
+
+#define START_X 50
+#define START_Y 0
+
+typedef struct
+{
+	int x[4];
+	int y[4];
+	
+} point_t;
+
+typedef struct Diam
+{
+  int x[500];
+  int y[500];
+} diam;
+
+int road[32][20];
 
 sprite_t* mk_sprite(int x,int y,int w,int c,int t){
-  sprite_t* sp = alloc_mem(sizeof(sprite_t) + sizeof(int)*5);
+  sprite_t* sp = alloc_mem(sizeof(sprite_t) + sizeof(int)*5 + sizeof(point_t) );
   sp->data = (char*)sp+ sizeof(sprite_t);
+
   sp->reserved = NULL;
   ((int*)sp->data)[0] = x;
   ((int*)sp->data)[1] = y;
@@ -28,140 +54,241 @@ void draw_diam(sprite_t* sp)		//画各种形状,这是打算写在一个函数�
   w = ((int*)sp->data)[2];
   c = ((int*)sp->data)[3];
   t = ((int*)sp->data)[4];
-
+  point_t* ps = (point_t*)((char*)sp->data + sizeof(sprite_t) + sizeof(int)*5);
+  //int diamX[4];
+  //int diamY[4];
   if (t == 11)
   {
-      draw_rect(x,y,w,w,c);
-	  draw_rect(x,y+w,w,w,c);
-	  draw_rect(x+w,y+w,w,w,c);
-	  draw_rect(x+w+w,y+w,w,w,c);
+	  ps->x[0] = x;
+	  ps->y[0] = y;
+	  ps->x[1] = x;
+	  ps->y[1] = y + w;
+	  ps->x[2] = x + w;
+	  ps->y[2] = y + w;
+	  ps->x[3] = x + w + w;
+	  ps->y[3] = y + w;
+      
   }
   else if (t == 12)
   {
-      draw_rect(x,y,w,w,c);
-	  draw_rect(x,y+w,w,w,c);
-	  draw_rect(x+w,y,w,w,c);
-	  draw_rect(x,y+w+w,w,w,c);
+	  ps->x[0] = x;
+	  ps->y[0] = y;
+	  ps->x[1] = x;
+	  ps->y[1] = y + w;
+	  ps->x[2] = x + w;
+	  ps->y[2] = y;
+	  ps->x[3] = x;
+	  ps->y[3] = y + w + w;
   }
   else if (t == 13)
   {
-      draw_rect(x,y,w,w,c);
-	  draw_rect(x+w,y,w,w,c);
-	  draw_rect(x+w+w,y,w,w,c);
-	  draw_rect(x+w+w,y+w,w,w,c);
+	  ps->x[0] = x;
+	  ps->y[0] = y;
+	  ps->x[1] = x + w;
+	  ps->y[1] = y;
+	  ps->x[2] = x + w + w;
+	  ps->y[2] = y;
+	  ps->x[3] = x + w + w;
+	  ps->y[3] = y + w;
   }
   else if (t == 14)
   {
-      draw_rect(x+w,y,w,w,c);
-	  draw_rect(x+w,y+w,w,w,c);
-	  draw_rect(x+w,y+w+w,w,w,c);
-	  draw_rect(x,y+w+w,w,w,c);
+	  ps->x[0] = x + w;
+	  ps->y[0] = y;
+	  ps->x[1] = x + w;
+	  ps->y[1] = y + w;
+	  ps->x[2] = x + w;
+	  ps->y[2] = y + w + w;
+	  ps->x[3] = x;
+	  ps->y[3] = y + w + w;
   }
   else if (t == 21)
   {
-      draw_rect(x+w+w,y,w,w,c);
-      draw_rect(x+w+w,y+w,w,w,c);
-      draw_rect(x+w,y+w,w,w,c);
-      draw_rect(x,y+w,w,w,c);
+	  ps->x[0] = x + w + w ;
+	  ps->y[0] = y;
+	  ps->x[1] = x + w + w ;
+	  ps->y[1] = y + w;
+	  ps->x[2] = x + w;
+	  ps->y[2] = y + w;
+	  ps->x[3] = x;
+	  ps->y[3] = y + w;
   }
   else if (t == 22)
   {
-      draw_rect(x,y,w,w,c);
-      draw_rect(x,y+w,w,w,c);
-      draw_rect(x,y+w+w,w,w,c);
-      draw_rect(x+w,y+w+w,w,w,c);
+	  ps->x[0] = x;
+	  ps->y[0] = y;
+	  ps->x[1] = x;
+	  ps->y[1] = y + w;
+	  ps->x[2] = x;
+	  ps->y[2] = y + w + w ;
+	  ps->x[3] = x + w;
+	  ps->y[3] = y + w + w;
   }
   else if (t == 23)
   {
-      draw_rect(x,y,w,w,c);
-      draw_rect(x,y+w,w,w,c);
-      draw_rect(x+w,y,w,w,c);
-      draw_rect(x+w+w,y,w,w,c);
+	  ps->x[0] = x;
+	  ps->y[0] = y;
+	  ps->x[1] = x;
+	  ps->y[1] = y + w;
+	  ps->x[2] = x + w;
+	  ps->y[2] = y;
+	  ps->x[3] = x + w + w ;
+	  ps->y[3] = y;
   }
   else if (t == 24)
   {
-      draw_rect(x,y,w,w,c);
-      draw_rect(x+w,y,w,w,c);
-      draw_rect(x+w,y+w,w,w,c);
-      draw_rect(x+w,y+w+w,w,w,c);
+	  ps->x[0] = x;
+	  ps->y[0] = y;
+	  ps->x[1] = x + w;
+	  ps->y[1] = y;
+	  ps->x[2] = x + w;
+	  ps->y[2] = y + w;
+	  ps->x[3] = x + w;
+	  ps->y[3] = y + w + w;
   }
   else if (t == 31)
   {
-      draw_rect(x,y,w,w,c);
-      draw_rect(x+w,y,w,w,c);
-      draw_rect(x+w,y+w,w,w,c);
-      draw_rect(x+w+w,y+w,w,w,c);
+	  ps->x[0] = x;
+	  ps->y[0] = y;
+	  ps->x[1] = x + w;
+	  ps->y[1] = y;
+	  ps->x[2] = x + w;
+	  ps->y[2] = y + w;
+	  ps->x[3] = x + w + w ;
+	  ps->y[3] = y + w;
   }
   else if (t == 32)
   {
-      draw_rect(x+w,y,w,w,c);
-      draw_rect(x,y+w,w,w,c);
-      draw_rect(x+w,y+w,w,w,c);
-      draw_rect(x,y+w+w,w,w,c);
+	  ps->x[0] = x + w;
+	  ps->y[0] = y;
+	  ps->x[1] = x;
+	  ps->y[1] = y + w;
+	  ps->x[2] = x + w;
+	  ps->y[2] = y + w;
+	  ps->x[3] = x;
+	  ps->y[3] = y + w + w;
   }
   else if (t == 41)
   {
-      draw_rect(x+w,y,w,w,c);
-      draw_rect(x+w+w,y,w,w,c);
-      draw_rect(x,y+w,w,w,c);
-      draw_rect(x+w,y+w,w,w,c);
+	  ps->x[0] = x + w;
+	  ps->y[0] = y;
+	  ps->x[1] = x + w + w;
+	  ps->y[1] = y;
+	  ps->x[2] = x;
+	  ps->y[2] = y + w;
+	  ps->x[3] = x + w;
+	  ps->y[3] = y + w;
   }
   else if (t == 42)
   {
-      draw_rect(x,y,w,w,c);
-      draw_rect(x,y+w,w,w,c);
-      draw_rect(x+w,y+w,w,w,c);
-      draw_rect(x+w,y+w+w,w,w,c);
+	  ps->x[0] = x;
+	  ps->y[0] = y;
+	  ps->x[1] = x;
+	  ps->y[1] = y + w;
+	  ps->x[2] = x + w;
+	  ps->y[2] = y + w;
+	  ps->x[3] = x + w;
+	  ps->y[3] = y + w + w;
   }
   else if (t == 51)
   {
-      draw_rect(x,y,w,w,c);
-      draw_rect(x+w,y,w,w,c);
-      draw_rect(x+w,y+w,w,w,c);
-      draw_rect(x,y+w,w,w,c);
+	  ps->x[0] = x;
+	  ps->y[0] = y;
+	  ps->x[1] = x + w;
+	  ps->y[1] = y;
+	  ps->x[2] = x + w;
+	  ps->y[2] = y + w;
+	  ps->x[3] = x;
+	  ps->y[3] = y + w;	
   }
   else if (t == 61)
   {
-      draw_rect(x+w,y,w,w,c);
-      draw_rect(x,y+w,w,w,c);
-      draw_rect(x+w,y+w,w,w,c);
-      draw_rect(x+w+w,y+w,w,w,c);
+	  ps->x[0] = x + w;
+	  ps->y[0] = y;
+	  ps->x[1] = x;
+	  ps->y[1] = y + w;
+	  ps->x[2] = x + w;
+	  ps->y[2] = y + w;
+	  ps->x[3] = x + w + w ;
+	  ps->y[3] = y + w;
   }
   else if (t == 62)
   {
-      draw_rect(x,y,w,w,c);
-      draw_rect(x,y+w,w,w,c);
-      draw_rect(x+w,y+w,w,w,c);
-      draw_rect(x,y+w+w,w,w,c);
+	  ps->x[0] = x;
+	  ps->y[0] = y;
+	  ps->x[1] = x;
+	  ps->y[1] = y + w;
+	  ps->x[2] = x + w;
+	  ps->y[2] = y + w;
+	  ps->x[3] = x;
+	  ps->y[3] = y + w + w;
   }
   else if (t == 63)
   {
-      draw_rect(x,y,w,w,c);
-      draw_rect(x+w,y,w,w,c);
-      draw_rect(x+w+w,y,w,w,c);
-      draw_rect(x+w,y+w,w,w,c);
+	  ps->x[0] = x;
+	  ps->y[0] = y;
+	  ps->x[1] = x + w;
+	  ps->y[1] = y;
+	  ps->x[2] = x + w + w;
+	  ps->y[2] = y;
+	  ps->x[3] = x + w;
+	  ps->y[3] = y + w;
   }
   else if (t == 64)
   {
-      draw_rect(x+w,y,w,w,c);
-      draw_rect(x,y+w,w,w,c);
-      draw_rect(x+w,y+w,w,w,c);
-      draw_rect(x+w,y+w+w,w,w,c);
+	  ps->x[0] = x + w;
+	  ps->y[0] = y;
+	  ps->x[1] = x;
+	  ps->y[1] = y + w;
+	  ps->x[2] = x + w;
+	  ps->y[2] = y + w;
+	  ps->x[3] = x + w;
+	  ps->y[3] = y + w + w;
   }
   else if (t == 71)
   {
-      draw_rect(x,y,w,w,c);
-      draw_rect(x,y+w,w,w,c);
-      draw_rect(x,y+w+w,w,w,c);
-      draw_rect(x,y+w+w+w,w,w,c);
+	  ps->x[0] = x;
+	  ps->y[0] = y;
+	  ps->x[1] = x;
+	  ps->y[1] = y + w;
+	  ps->x[2] = x;
+	  ps->y[2] = y + w + w;
+	  ps->x[3] = x;
+	  ps->y[3] = y + w + w + w;
   }
   else if (t == 72)
   {
-      draw_rect(x,y,w,w,c);
-      draw_rect(x+w,y,w,w,c);
-      draw_rect(x+w+w,y,w,w,c);
-      draw_rect(x+w+w+w,y,w,w,c);
+	  ps->x[0] = x;
+	  ps->y[0] = y;
+	  ps->x[1] = x + w;
+	  ps->y[1] = y;
+	  ps->x[2] = x + w + w;
+	  ps->y[2] = y;
+	  ps->x[3] = x + w + w + w ;
+	  ps->y[3] = y;
   }
+  int i;
+  for (i = 0 ; i < 4 ; i++)
+  {
+		draw_rect(ps->x[i],ps->y[i],w,w,c);
+  }
+}
+
+void draw_brick(sprite_t* sp)
+{
+	int x,y,w,c,t;
+    x = ((int*)sp->data)[0];
+    y = ((int*)sp->data)[1];
+    w = ((int*)sp->data)[2];
+    c = ((int*)sp->data)[3];
+    t = ((int*)sp->data)[4];
+	int i,k;
+	for (i = 0 ; i < 32; i ++)
+		for (k = 0 ; k < 20 ; k ++)
+		{
+			if (road[i][k] == 1)
+				draw_rect(i * 10,k * 10,w,w,c);
+		}
 }
 
 
@@ -172,11 +299,58 @@ void noop_tick(sprite_t* s){
 void hjkl_tick(sprite_t* s){
   int key = get_lastkey();
 
+  int i,j;
+  
+  int x = ((int*)s->data)[0];
+  int y = ((int*)s->data)[1];
   int w = ((int*)s->data)[2];
   int type = ((int*)s->data)[4];
+  int diamX[4];
+  int diamY[4];
+  point_t*  ps = (point_t*)((char*)s->data + sizeof(sprite_t) + sizeof(int)*5);
+  int ok = 1;
+  for (i = 0 ; i < 4 ; i ++)
+  {
+	diamX[i] = ps->x[i];
+	diamY[i] = ps->y[i];
+  }
+
+  int r = rand();
+
   switch(key){
     case VKEY_DOWN:
-      ((int*)s->data)[1] += w;
+	
+		for (i = 0 ; i < 4 ; i ++)
+		{
+			if (diamY[i] + w >= MAX_HEIGHT || road[diamX[i] / 10][(diamY[i] + w) / 10] == 1)
+			{
+				for (i = 0 ; i < 4 ; i ++)
+					road[ps->x[i] / 10][ps->y[i] / 10] = 1;
+				ok = 0;
+				((int*)s->data)[0] = START_X;
+				((int*)s->data)[1] = START_Y;
+				((int*)s->data)[4] = 61;
+				break;
+			}
+		}
+		if (ok)
+			((int*)s->data)[1] += w;
+		//clean();
+			/*
+	  if (y + w + w >= MAX_HEIGHT)
+	  {
+
+		//road[5][5] = 1;	
+		for (i = 0 ; i < 4 ; i ++)
+			road[ps->x[i] / 10][ps->y[i] / 10] = 1;
+		((int*)s->data)[0] = 50;
+		((int*)s->data)[1] = 0;
+		((int*)s->data)[4] = 61;
+	  }
+	  
+	  else
+		((int*)s->data)[1] += w;
+		*/
       break;
     case VKEY_UP:
       //((int*)s->data)[1] -= w;
@@ -212,10 +386,70 @@ void hjkl_tick(sprite_t* s){
 	  
       break;
     case VKEY_LEFT:
-      ((int*)s->data)[0] -= w;
+	for (i = 0 ; i < 4 ; i ++)
+		{
+			if (diamX[i] - w < MIN_WIDTH || road[(diamX[i] - w) / 10][diamY[i] / 10] == 1)
+			{
+				if (diamY[i] + w >= MAX_HEIGHT || road[diamX[i] / 10][(diamY[i] + w) / 10] == 1)
+				{
+					for (i = 0 ; i < 4 ; i ++)
+						road[ps->x[i] / 10][ps->y[i] / 10] = 1;
+					
+					((int*)s->data)[0] = START_X;
+					((int*)s->data)[1] = START_Y;
+					((int*)s->data)[4] = 61;
+					
+				}
+				ok = 0;
+				break;
+			}
+		}
+		if (ok)
+			((int*)s->data)[0] -= w;
+      //((int*)s->data)[0] -= (x - w >= 0) ? w : 0;
       break;
     case VKEY_RIGHT:
-      ((int*)s->data)[0] += w;
+		for (i = 0 ; i < 4 ; i ++)
+		{
+			if (diamX[i] + w >= MAX_WIDTH || road[(diamX[i] + w) / 10][diamY[i] / 10] == 1)
+			{
+				
+				if (diamY[i] + w >= MAX_HEIGHT || road[diamX[i] / 10][(diamY[i] + w) / 10] == 1)
+				{
+					for (i = 0 ; i < 4 ; i ++)
+						road[ps->x[i] / 10][ps->y[i] / 10] = 1;
+					
+					((int*)s->data)[0] = START_X;
+					((int*)s->data)[1] = START_Y;
+					((int*)s->data)[4] = 61;
+					
+				}
+				ok = 0;
+				break;
+			}
+		}
+		if (ok)
+			((int*)s->data)[0] += w;
+		/*
+	   if (type == 11 || type == 13 || type == 21 || type == 23 
+	  || type == 31 || type == 41 || type == 61 || type == 63)
+	  {
+		((int*)s->data)[0] = ((int*)s->data)[0] += (x + w + w + w + w <= MAX_WIDTH) ? w : 0;
+	  }
+	  else if (type == 12 || type == 14 || type == 22 ||
+	  type == 24 || type == 32 || type == 42 || type == 51 || type == 62 || type == 64)
+	  {
+		((int*)s->data)[0] += (x + w + w + w <= MAX_WIDTH) ? w : 0;
+	  }
+	  if (type == 72)
+	  {
+		((int*)s->data)[0] += (x + w + w + w + w + w <= MAX_WIDTH) ? w : 0;
+	  }
+	  if (type == 71)
+	  {
+		((int*)s->data)[0] += (x + w +w <= MAX_WIDTH) ? w : 0;
+	  }
+      */
       break;
   }
 }
@@ -231,15 +465,19 @@ void init_p(){
   sprite_t *la;
   sprite_t *lb;
   
+  sprite_t *brick;
+  
   //s1 = mk_sprite(0,0,10,0x20);
   //s2 = mk_sprite(0,50,10,0x20);
   //sa = mk_sprite(0,100,10,0x20);
   //sb = mk_sprite(0,150,10,0x20);
   
-  l1 = mk_sprite(50,0,10,0x20 ,21);
-  l2 = mk_sprite(50,50,10,0x20,31);
-  la = mk_sprite(50,100,10,0x20,42);
-  lb = mk_sprite(50,150,10,0x20,64);
+  brick = mk_sprite(0,0,10,0x30,0);
+  l1 = mk_sprite(50,0,10,0x20 ,11);
+  l2 = mk_sprite(60,50,10,0x20,31);
+  la = mk_sprite(70,100,10,0x20,42);
+  lb = mk_sprite(80,150,10,0x20,64);
+  
   
   l1->d = draw_diam;
   l1->t = hjkl_tick;
@@ -253,13 +491,87 @@ void init_p(){
   lb->d = draw_diam;
   lb->t = hjkl_tick;
   
+  brick->d = draw_brick;
+  brick->t = noop_tick;
   add_sprite(l1,0);
-  add_sprite(l2,0);
-  add_sprite(la,0);
-  add_sprite(lb,0);
+  add_sprite(brick,1);
+  //add_sprite(l2,0);
+  //add_sprite(la,0);
+  //add_sprite(lb,0);
   
+
+  srand(tick);
+}
+
+void clean()
+{
+	int i,j;
+  int num_row = 0;
+  int arr_row[MAX_HEIGHT];
+  memset(arr_row,0,sizeof(arr_row));
+  for (i = 0 ; i < MAX_HEIGHT / 10; i ++)
+  {
+	int count = 0;
+	for (j = 0 ; j < MAX_WIDTH / 10 ; j ++)
+	{
+		if (road[j][i] == 1)
+			count++;
+	}
+	if (count == MAX_WIDTH / 10 - 1)
+	{
+		arr_row[i] = 1;
+		num_row++;
+	}
+  }
+  int k;
+  for (i = 0 ; i < MAX_HEIGHT / 10 ; i ++)
+  {
+	if (arr_row[i] == 1)
+	{
+		for (k = 1 ; k < MAX_HEIGHT / 10 ; k ++)
+		{
+			for (j = 0 ; j < MAX_WIDTH / 10 ; j ++ )
+			{
+				road[j][k] = road[j][k - 1];
+			}
+		}
+	}
+  }
 }
 
 void main_p(){
-  //road[0][0] = 1;
+  road[0][0] = 1;
+  road[0][1] = 1;
+  int i,j;
+  int num_row = 0;
+  int arr_row[MAX_HEIGHT];
+  memset(arr_row,0,sizeof(arr_row));
+  for (i = 0 ; i < MAX_HEIGHT / 10; i ++)
+  {
+	int count = 0;
+	for (j = 0 ; j < MAX_WIDTH / 10 ; j ++)
+	{
+		if (road[j][i] == 1)
+			count++;
+	}
+	if (count == MAX_WIDTH / 10)
+	{
+		arr_row[i] = 1;
+		num_row++;
+	}
+  }
+  int k;
+  for (i = 0 ; i < MAX_HEIGHT / 10 ; i ++)
+  {
+	if (arr_row[i] == 1)
+	{
+		for (k = i ; k > 0 ; k --)
+		{
+			for (j = 0 ; j < MAX_WIDTH / 10 ; j ++ )
+			{
+				road[j][k] = road[j][k - 1];
+			}
+		}
+	}
+  }
 }

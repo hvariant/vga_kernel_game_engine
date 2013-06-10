@@ -33,3 +33,5 @@ PUBLIC void spurious_irq(int irq);
 PUBLIC void clock_handler(int irq);
 PUBLIC void keyboard_irq(int irq);
 
+void srand(int);
+int rand();
