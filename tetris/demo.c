@@ -3,7 +3,7 @@
 #include "stdio.h"
 
 
-#define MAX_WIDTH 100
+#define MAX_WIDTH 150
 #define MAX_HEIGHT 200
 #define MIN_WIDTH 0
 #define MIN_HEIGHT 0
@@ -41,7 +41,7 @@ sprite_t* mk_sprite(int x,int y,int w,int c,int t){
 }
 
 
-
+int states[8] = {11,21,31,41,51,61,71};
 
 void draw_diam(sprite_t* sp)		//画各种形状,这是打算写在一个函数里，由参数data确定
 								//用两位十进制编码各种形状，11-14代表反L，21-24代表正L，
@@ -315,26 +315,25 @@ void hjkl_tick(sprite_t* s){
 	diamY[i] = ps->y[i];
   }
 
-  int r = rand();
+  for (i = 0 ; i < 4 ; i ++)
+  {
+    if (diamY[i] + w >= MAX_HEIGHT || road[diamX[i] / 10][(diamY[i] + w) / 10] == 1)
+    {
+      for (j = 0 ; j < 4 ; j ++)
+        road[ps->x[j] / 10][ps->y[j] / 10] = 1;
+      ok = 0;
+      ((int*)s->data)[0] = START_X;
+      ((int*)s->data)[1] = START_Y;
+      ((int*)s->data)[4] = states[rand()%8];
+      break;
+    }
+  }
+  if (ok)
+    ((int*)s->data)[1] += w;
 
   switch(key){
     case VKEY_DOWN:
 	
-		for (i = 0 ; i < 4 ; i ++)
-		{
-			if (diamY[i] + w >= MAX_HEIGHT || road[diamX[i] / 10][(diamY[i] + w) / 10] == 1)
-			{
-				for (i = 0 ; i < 4 ; i ++)
-					road[ps->x[i] / 10][ps->y[i] / 10] = 1;
-				ok = 0;
-				((int*)s->data)[0] = START_X;
-				((int*)s->data)[1] = START_Y;
-				((int*)s->data)[4] = 61;
-				break;
-			}
-		}
-		if (ok)
-			((int*)s->data)[1] += w;
 		//clean();
 			/*
 	  if (y + w + w >= MAX_HEIGHT)
