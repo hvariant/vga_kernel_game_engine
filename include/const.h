@@ -60,6 +60,7 @@
 #define VKEY_DOWN 0x24
 #define VKEY_LEFT 0x23
 #define VKEY_RIGHT 0x26
+#define VKEY_START 0x39
 
 #define REFRESH_TICKS 80
 

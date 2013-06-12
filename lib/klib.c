@@ -74,14 +74,14 @@ PUBLIC void delay(int times)
 	}
 }
 
-int rand_seed;
-int X;
+unsigned int rand_seed;
+unsigned int X;
 
 void srand(int seed){
-  rand_seed = seed;
-  X = seed;
+    rand_seed = seed;
+    X = seed;
 }
 
-int rand(){
-  return X = (69069 * X + 1);
+unsigned int rand(){
+    return X = (69069 * X + 1);
 }

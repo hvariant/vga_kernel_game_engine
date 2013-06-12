@@ -11,6 +11,8 @@ PUBLIC u8	in_byte(u16 port);
 PUBLIC void	disp_str(char * info);
 PUBLIC void	disp_color_str(char * info, int color);
 PUBLIC void put_pixel(int p,int len,int color);
+PUBLIC void fill_screen(char* buf);
+PUBLIC void fill_buf(char* buf);
 
 /* protect.c */
 PUBLIC void	init_prot();
@@ -34,4 +36,4 @@ PUBLIC void clock_handler(int irq);
 PUBLIC void keyboard_irq(int irq);
 
 void srand(int);
-int rand();
+unsigned int rand();

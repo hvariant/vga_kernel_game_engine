@@ -8,6 +8,8 @@ extern volatile int tick;
 extern volatile int keys_len;
 extern volatile int keys[KEY_BUFFER_SIZE];
 
+char buf[320*200];
+
 void draw_rect(int x,int y,int w,int h,int c){
   int i,j;
 
@@ -21,9 +23,15 @@ void draw_rect(int x,int y,int w,int h,int c){
 
   for(i=y;i<y+h;i++){
     int s = x + i*320;
-    put_pixel(s,w,c);
+    //put_pixel(s,w,c);
+    for(j=s;j<=s+w;j++)
+      buf[j] = c;
     //for(j=s;j<s+w;j++) double_buf[j] = c;
   }
+}
+
+void fill_buf(char* s){
+  memcpy(buf,s,320*200);
 }
 
 char mem[MEM_SIZE];
@@ -87,8 +95,8 @@ void free_mem(void* v){
 void engine()
 {
   int i,j;
-  int bg = 0;
   static int lasttick = 0;
+  int start = 0;
 
   for(i=0;i<4;i++)
     for(j=0;j<MAX_SPRITE_Z;j++){
@@ -97,6 +105,7 @@ void engine()
 
   init_mem();
   init_p();
+
   i = 0;
   while(1){
     while(tick - lasttick < REFRESH_TICKS);
@@ -105,25 +114,31 @@ void engine()
     disable_irq(CLOCK_IRQ);
     disable_irq(KEYBOARD_IRQ);
 
-    if(bg % 2 == 0){
-      //draw_rect(0,0,320,200,0x80);
-    } else {
-      //draw_rect(0,0,320,200,0x81);
-    }
-    bg++;
-
     draw_rect(0,0,320,200,0);
-    for(i=0;i<4;i++)
-      for(j=0;j<MAX_SPRITE_Z;j++){
-        if(sp_list[i][j].used == 1){
-          sp_list[i][j].sp->t(sp_list[i][j].sp);
-          sp_list[i][j].sp->d(sp_list[i][j].sp);
-        }
-      }
 
-    main_p();
-    
+    if(start == 0){
+      int key = get_lastkey();
+
+      if(key == VKEY_START){
+        start = 1;
+        srand(tick/REFRESH_TICKS);
+      }
+    } else {
+      main_p();
+
+      for(i=0;i<4;i++)
+        for(j=0;j<MAX_SPRITE_Z;j++){
+          if(sp_list[i][j].used == 1){
+            sp_list[i][j].sp->t(sp_list[i][j].sp);
+            sp_list[i][j].sp->d(sp_list[i][j].sp);
+          }
+        }
+    }
+
+
     keys_len = 0;
+
+    fill_screen(buf);
     enable_irq(KEYBOARD_IRQ);
     enable_irq(CLOCK_IRQ);
   }

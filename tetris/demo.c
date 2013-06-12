@@ -3,12 +3,12 @@
 #include "stdio.h"
 
 
-#define MAX_WIDTH 150
+#define MAX_WIDTH 250
 #define MAX_HEIGHT 200
-#define MIN_WIDTH 0
+#define MIN_WIDTH 60
 #define MIN_HEIGHT 0
 
-#define START_X 50
+#define START_X 160
 #define START_Y 0
 
 typedef struct
@@ -265,6 +265,7 @@ void draw_diam(sprite_t* sp)		//画各种形状,这是打算写在一个函数�
   for (i = 0 ; i < 4 ; i++)
   {
 		draw_rect(ps->x[i],ps->y[i],w,w,c);
+    //road[ps->x[i]/10][ps->y[i]/10] = 1;
   }
 }
 
@@ -277,15 +278,21 @@ void draw_brick(sprite_t* sp)
     c = ((int*)sp->data)[3];
     t = ((int*)sp->data)[4];
 	int i,k;
-	for (i = 0 ; i < 32; i ++)
-		for (k = 0 ; k < 20 ; k ++)
+	for (i = MIN_WIDTH / 10 ; i < MAX_WIDTH / 10; i ++)
+		for (k = MIN_HEIGHT / 10 ; k < MAX_HEIGHT / 10 ; k ++)
 		{
-			if (road[i][k] == 1)
+			if (road[i][k] == 1){
 				draw_rect(i * 10,k * 10,w,w,c);
+      }
 		}
-    for (i =0 ; i < 20 ; i ++)
+
+    for (i = MIN_HEIGHT / 10 ; i < MAX_WIDTH ; i ++)
     {
-	draw_rect(150,i * 10,3,3,0x40);
+		draw_rect(MIN_WIDTH-3,i * 10,3,3,0x40);
+    }
+    for (i = MIN_HEIGHT / 10 ; i < MAX_WIDTH ; i ++)
+    {
+		draw_rect(MAX_WIDTH+3,i * 10,3,3,0x40);
     }
 }
 
@@ -297,6 +304,7 @@ void noop_tick(sprite_t* s){
 void hjkl_tick(sprite_t* s){
   int key = get_lastkey();
 
+
   int i,j;
   
   int x = ((int*)s->data)[0];
@@ -305,6 +313,10 @@ void hjkl_tick(sprite_t* s){
   int type = ((int*)s->data)[4];
   int diamX[4];
   int diamY[4];
+  
+  int index;
+	int t4=0;
+  
   point_t*  ps = (point_t*)((char*)s->data + sizeof(sprite_t) + sizeof(int)*5);
   int ok = 1;
   for (i = 0 ; i < 4 ; i ++)
@@ -348,30 +360,49 @@ void hjkl_tick(sprite_t* s){
 	  else
 		((int*)s->data)[1] += w;
 		*/
+	 
+	 index=100;
+	
+	 for(i=0;i<=3;i++)
+	 {
+	    t4=0;
+	    for(j=diamY[i]+10;j<=190;j+=10)
+		{
+		   if(road[diamX[i]/10][j/10]!=1)
+		   {t4++;}
+		   else break;
+		}
+		if(index>=t4) index=t4;
+	 }
+
+	    ((int*)s->data)[1]+=(index-1)*10;
+
+	  
+	  
       break;
     case VKEY_UP:
       if (type == 11)
 	  {
-	     if(road[(x + w) / 10][(y+w) / 10] == 1 || road[x/10][(y+w+w+w)/10] == 1)
-		 {((int*)s->data)[4] = 11; }
+	     if(road[(x + w) / 10][(y+w) / 10] == 1 || road[x/10][(y+w+w+w)/10] == 1 || y+w+w+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 12;
 	  }
 	  else if(type == 12)
 	  {
-	     if(road[(x+w+w)/10][(y+w)/10] == 1 || road[(x+w+w)/10][(y+w+w)/10] == 1)
-		 {((int*)s->data)[4] = 12;}
+	     if(road[(x+w+w)/10][(y+w)/10] == 1 || road[(x+w+w)/10][(y+w+w)/10] == 1 || y+w+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 13;
 	  }
 	  else if(type == 13)
 	  {
-	     if(road[(x+w)/10][(y+w+w)/10] == 1 || road[(x+w)/10][(y+w+w+w)/10] == 1)
-		 {((int*)s->data)[4] = 13;}
+	     if(road[(x+w)/10][(y+w+w)/10] == 1 || road[(x+w)/10][(y+w+w+w)/10] == 1 || y+w+w+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 14;
 	  }
 	  else if(type == 14)
 	  {
-	     if(road[x/10][(y+w)/10] == 1 || road[x/10][(y+w+w)/10] == 1)
-		 {((int*)s->data)[4] = 14;}
+	     if(road[x/10][(y+w)/10] == 1 || road[x/10][(y+w+w)/10] == 1 || y+w+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 11;
 	  }
 	//  if (type >= 11 && type <=14)
@@ -380,26 +411,26 @@ void hjkl_tick(sprite_t* s){
 	 // }
 	  else if(type == 21)
 	  {
-	     if(road[x/10][(y+w)/10] == 1 || road[x/10][(y+w+w+w)/10] == 1 || road[(x+w)/10][(y+w+w+w)/10] == 1)
-		 {((int*)s->data)[4] = 21;}
+	     if(road[x/10][(y+w)/10] == 1 || road[x/10][(y+w+w+w)/10] == 1 || road[(x+w)/10][(y+w+w+w)/10] == 1 || y+w+w+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 22;
 	  }
 	  else if(type == 22)
 	  {
-	     if(road[(x+w)/10][(y+w)/10] == 1 || road[(x+w+w)/10][(y+w)/10] == 1)
-		 {((int*)s->data)[4] = 22;}
+	     if(road[(x+w)/10][(y+w)/10] == 1 || road[(x+w+w)/10][(y+w)/10] == 1 || y+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 23;
 	  }
 	  else if(type == 23)
 	  {
-	     if(road[(x+w)/10][(y+w+w)/10] == 1 || road[(x+w)/10][(y+w+w+w)/10] == 1)
-		 {((int*)s->data)[4] = 23;}
+	     if(road[(x+w)/10][(y+w+w)/10] == 1 || road[(x+w)/10][(y+w+w+w)/10] == 1 || y+w+w+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 24;
 	  }
 	  else if(type == 24)
 	  {
-	     if(road[(x+w+w)/10][(y+w)/10] == 1 || road[(x+w+w)/10][(y+w+w)/10] == 1 || road[x/10][(y+w+w)/10] == 1)
-		 {((int*)s->data)[4] = 24;}
+	     if(road[(x+w+w)/10][(y+w)/10] == 1 || road[(x+w+w)/10][(y+w+w)/10] == 1 || road[x/10][(y+w+w)/10] == 1 || y+w+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 21;
 	  }	  
 	/*  else if (type >= 21 && type <=24)
@@ -417,26 +448,26 @@ void hjkl_tick(sprite_t* s){
 	  */
 	  else if(type == 31)
 	  {
-	     if(road[x/10][(y+w+w)/10] == 1 || road[x/10][(y+w+w+w)/10] == 1)
-		 {((int*)s->data)[4] = 31;}
+	     if(road[x/10][(y+w+w)/10] == 1 || road[x/10][(y+w+w+w)/10] == 1 || y+w+w+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 32;
 	  }
 	  else if(type == 32)
 	  {
-	     if(road[x/10][(y+w)/10] == 1 || road[(x+w+w)/10][(y+w+w)/10] == 1)
-		 {((int*)s->data)[4] = 32;}
+	     if(road[x/10][(y+w)/10] == 1 || road[(x+w+w)/10][(y+w+w)/10] == 1 || y+w+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 31;
 	  }
 	  else if(type == 41)
 	  {
-	     if(road[x/10][(y+w)/10] == 1 || road[(x+w)/10][(y+w+w+w)/10] == 1)
-		 {((int*)s->data)[4] = 41;}
+	     if(road[x/10][(y+w)/10] == 1 || road[(x+w)/10][(y+w+w+w)/10] == 1 || y+w+w+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 42;
 	  }
 	  else if(type == 42)
 	  {
-	     if(road[(x+w)/10][(y+w)/10] == 1 || road[(x+w+w)/10][(y+w)/10] == 1)
-		 {((int*)s->data)[4] = 42;}
+	     if(road[(x+w)/10][(y+w)/10] == 1 || road[(x+w+w)/10][(y+w)/10] == 1 || y+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 41;
 	  }	  
 	  else if (type == 51)
@@ -454,39 +485,39 @@ void hjkl_tick(sprite_t* s){
 	  }*/
 	  else if(type == 61)
 	  {
-	     if(road[x/10][(y+w)/10] == 1 || road[x/10][(y+w+w+w)/10] == 1)
-		 {((int*)s->data)[4] = 61;}
+	     if(road[x/10][(y+w)/10] == 1 || road[x/10][(y+w+w+w)/10] == 1 || y+w+w+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 62;
 	  }
 	  else if(type == 62)
 	  {
-	     if(road[(x+w)/10][(y+w)/10] == 1 || road[(x+w+w)/10][(y+w)/10] == 1)
-		 {((int*)s->data)[4] = 62;}
+	     if(road[(x+w)/10][(y+w)/10] == 1 || road[(x+w+w)/10][(y+w)/10] == 1 || y+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 63;
 	  }
 	  else if(type == 63)
 	  {
-	     if(road[x/10][(y+w+w)/10] == 1 || road[(x+w)/10][(y+w+w+w)/10] == 1)
-		 {((int*)s->data)[4] = 63;}
+	     if(road[x/10][(y+w+w)/10] == 1 || road[(x+w)/10][(y+w+w+w)/10] == 1 || y+w+w+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 64;
 	  }
 	  else if(type == 64)
 	  {
-	     if( road[(x+w+w)/10][(y+w+w)/10] == 1 )
-		 {((int*)s->data)[4] = 64;}
+	     if( road[(x+w+w)/10][(y+w+w)/10] == 1 || y+w+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 61;
 	  }
 
 	  else if(type == 71)
 	  {
-	     if(road[(x+w)/10][(y+w)/10] == 1 || road[(x+w+w)/10][(y+w)/10] == 1 || road[(x+w+w+w)/10][(y+w)/10] == 1)
-		 {((int*)s->data)[4] = 71;}
+	     if(road[(x+w)/10][(y+w)/10] == 1 || road[(x+w+w)/10][(y+w)/10] == 1 || road[(x+w+w+w)/10][(y+w)/10] == 1 || y+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 72;
 	  }
 	  else if(type == 72)
 	  {
-	     if(road[x/10][(y+w+w)/10] == 1 || road[x/10][(y+w+w+w)/10] == 1 || road[x/10][(y+w+w+w+w)/10] == 1)
-		 {((int*)s->data)[4] = 72;}
+	     if(road[x/10][(y+w+w)/10] == 1 || road[x/10][(y+w+w+w)/10] == 1 || road[x/10][(y+w+w+w+w)/10] == 1 || y+w+w+w+w>=200)
+		 {}
 		 else ((int*)s->data)[4] = 71;
 	  }
 	  
@@ -541,41 +572,45 @@ void hjkl_tick(sprite_t* s){
 }
 
 void init_p(){
-  sprite_t *s1;
-  sprite_t *s2;
-  sprite_t *sa;
-  sprite_t *sb;
+  /*sprite_t *s1;*/
+  /*sprite_t *s2;*/
+  /*sprite_t *sa;*/
+  /*sprite_t *sb;*/
   
   sprite_t *l1;
-  sprite_t *l2;
-  sprite_t *la;
-  sprite_t *lb;
+  /*sprite_t *l2;*/
+  /*sprite_t *la;*/
+  /*sprite_t *lb;*/
   
   sprite_t *brick;
   
+  int i,j;
   //s1 = mk_sprite(0,0,10,0x20);
   //s2 = mk_sprite(0,50,10,0x20);
   //sa = mk_sprite(0,100,10,0x20);
   //sb = mk_sprite(0,150,10,0x20);
   
+  for(i=0;i<32;i++)
+    for(j=0;j<20;j++) road[i][j] = 0;
+
   brick = mk_sprite(0,0,10,0x30,0);
-  l1 = mk_sprite(50,0,10,0x20 ,11);
-  l2 = mk_sprite(60,50,10,0x20,31);
-  la = mk_sprite(70,100,10,0x20,42);
-  lb = mk_sprite(80,150,10,0x20,64);
+  l1 = mk_sprite(START_X,START_Y,10,0x20 ,states[rand()%8]);
+  //l2 = mk_sprite(60,50,10,0x20,31);
+  //la = mk_sprite(70,100,10,0x20,42);
+  //lb = mk_sprite(80,150,10,0x20,64);
   
   
   l1->d = draw_diam;
   l1->t = hjkl_tick;
   
-  l2->d = draw_diam;
-  l2->t = hjkl_tick;
+  /*l2->d = draw_diam;*/
+  /*l2->t = hjkl_tick;*/
   
-  la->d = draw_diam;
-  la->t = hjkl_tick;
+  /*la->d = draw_diam;*/
+  /*la->t = hjkl_tick;*/
   
-  lb->d = draw_diam;
-  lb->t = hjkl_tick;
+  /*lb->d = draw_diam;*/
+  /*lb->t = hjkl_tick;*/
   
   brick->d = draw_brick;
   brick->t = noop_tick;
@@ -584,9 +619,9 @@ void init_p(){
   //add_sprite(l2,0);
   //add_sprite(la,0);
   //add_sprite(lb,0);
-  
 
-  srand(tick);
+
+  //srand(tick);
 }
 
 void main_p(){
@@ -594,32 +629,34 @@ void main_p(){
   int num_row = 0;
   int arr_row[MAX_HEIGHT];
   memset(arr_row,0,sizeof(arr_row));
-  for (i = 0 ; i < MAX_HEIGHT / 10; i ++)
+  for (i = MIN_HEIGHT / 10 ; i < MAX_HEIGHT / 10; i ++)
   {
 	int count = 0;
-	for (j = 0 ; j < MAX_WIDTH / 10 ; j ++)
+	for (j = MIN_WIDTH / 10 ; j < MAX_WIDTH / 10 ; j ++)
 	{
 		if (road[j][i] == 1)
 			count++;
 	}
-	if (count == MAX_WIDTH / 10)
+	if (count == (MAX_WIDTH-MIN_WIDTH) / 10)
 	{
 		arr_row[i] = 1;
 		num_row++;
 	}
   }
   int k;
-  for (i = 0 ; i < MAX_HEIGHT / 10 ; i ++)
+  for (i = MIN_HEIGHT / 10 ; i < MAX_HEIGHT / 10 ; i ++)
   {
 	if (arr_row[i] == 1)
 	{
 		for (k = i ; k > 0 ; k --)
 		{
-			for (j = 0 ; j < MAX_WIDTH / 10 ; j ++ )
+			for (j = MIN_WIDTH / 10 ; j < MAX_WIDTH / 10 ; j ++ )
 			{
 				road[j][k] = road[j][k - 1];
 			}
 		}
 	}
   }
+  //for (i = 0 ; i < 20 ; i ++)
+	//road[15][i] = 1;
 }

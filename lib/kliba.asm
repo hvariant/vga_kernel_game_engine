@@ -21,6 +21,7 @@ global	in_byte
 global  enable_irq
 global  disable_irq
 global  put_pixel
+global  fill_screen
 
 ; ========================================================================
 ;                  void disp_str(char * info);
@@ -123,6 +124,35 @@ put_pixel:
   mov ax,dx
   mov es,ax
 
+  popad
+  pop ebp
+  ret
+
+; ========================================================================
+;                  void fill_screen(char*);
+; ========================================================================
+
+fill_screen:
+  push ebp
+  mov ebp,esp
+  pushad
+
+  mov ecx,320*200
+  xor edi,edi
+  mov eax,[ebp+8]
+FS_LOOP:
+  cmp ecx,0
+  jz END
+
+  mov dl,[eax]
+  mov [gs:edi],dl
+
+  dec ecx
+  inc edi
+  inc eax
+  jmp FS_LOOP
+
+END:
   popad
   pop ebp
   ret

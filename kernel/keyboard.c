@@ -22,7 +22,7 @@ PUBLIC void keyboard_irq(int irq){
       //nothing
     } else {
       if(!(code & 0x80)){
-        if(code >= 0x23 && code <= 0x26){
+        if(code >= 0x23 && code <= 0x26 || code == VKEY_START){
           if(keys_len < KEY_BUFFER_SIZE){
             keys[keys_len++] = code;
           }
